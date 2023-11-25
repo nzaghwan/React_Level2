@@ -1,23 +1,39 @@
 import "./App.css";
 import "./color.css";
-import { useState } from "react";
-function App() {
-  const [person, changeName] = useState("Naser Zaghwan");
-  const [old, setOld] = useState("28");
-  const [num, setNum] = useState(1)
+import { useReducer } from "react";
 
-  const [color, setColor] = useState("")
+const initialTodos = { name: "Naser Zaghwan", age: 40, countstart: 0, theme: "light" }
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "CHANGE-NAME":
+      return { ...state, name: action.newValue };
+    case "CHANGE-AGE":
+      return { ...state, age: action.newValue };
+    case "CHANGE-ACOUNT":
+      return { ...state, countstart: action.newValue };
+    case "CHANGE-THEME":
+      return { ...state, theme: action.newValue };
+
+    default:
+      return state;
+  }
+};
+
+function App() {
+  const [allData, dispatch] = useReducer(reducer, initialTodos);
   return (
-    <div className={`App ${color}`}>
+    <div className={`App ${allData.theme}`}>
       <button onClick={() => {
-        setColor(color == "" ? "Dark" : "");
-      }} style={{ marginRight: "26px" }}>Toggle Theme</button>
-          <br />
+        dispatch({ type: "CHANGE-THEME", newValue: allData.theme == "Light" ? "Dark" : "Light" });
+      }}
+        style={{ marginRight: "26px" }}>Toggle Theme</button>
+      <br />
       {/* switch key */}
       <div onChange={() => {
-        setColor(color == "" ? "Dark" : "");
+        dispatch({ type: "CHANGE-THEME", newValue: allData.theme == "Light" ? "Dark" : "Light" });
       }}
-       className="btn-container">
+        className="btn-container">
         <i className="fa fa-sun-o" aria-hidden="true" />
         <label className="switch btn-color-mode-switch">
           <input type="checkbox" name="color_mode" id="color_mode" defaultValue={1} />
@@ -37,36 +53,39 @@ function App() {
       <br />
       <div>
         <button onClick={() => {
-          setColor("light")
+          dispatch({ type: "CHANGE-THEME", newValue: "Light" });
         }} style={{ marginRight: "26px" }}>Light</button>
         <button onClick={() => {
-          setColor("Dark")
+          dispatch({ type: "CHANGE-THEME", newValue: "Dark" });
         }} style={{ marginRight: "26px" }}>Dark</button>
         <button onClick={() => {
-          setColor("Grey")
+          dispatch({ type: "CHANGE-THEME", newValue: "Grey" });
         }} style={{ marginRight: "26px" }}>Grey</button>
+
         <button onClick={() => {
-          setColor("Pink")
-        }} style={{ marginRight: "26px" }}>Pink</button>
-        <h2>My Name is {person}</h2>
+          dispatch({ type: "CHANGE-THEME", newValue: "Pink" });
+        }}
+          style={{ marginRight: "26px" }}>Pink</button>
+
+        <h2>My Name is {allData.name}</h2>
         <button onClick={() => {
-          changeName("NasZag")
+          dispatch({ type: "CHANGE-NAME", newValue: "NasZag" });
         }}>Change Name</button>
       </div>
       <br />
       <br />
-      <h2>My Age is {old}</h2>
+      <h2>My Age is {allData.age} </h2>
       <button onClick={() => {
-        setOld("33")
-      }}> Change Age</button>
+        dispatch({ type: "CHANGE-AGE", newValue: 50 });
+      }} > Change Age</button>
 
       <br />
       <br />
       <br />
       <br />
       <button onClick={() => {
-        setNum(num + 1)
-      }}>count is {num}</button>
+        dispatch({ type: "CHANGE-ACOUNT", newValue: allData.countstart + 1 });
+      }}>count is {allData.countstart} </button>
     </div>
   );
 }
